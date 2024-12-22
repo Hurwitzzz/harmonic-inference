@@ -23,7 +23,7 @@ conda activate harmony
 ```
 3. Install the package and dependencies with pip:
 ```
-pip install -e .[dev]
+pip install -e '.[dev]'
 ```
 
 ## Usage
