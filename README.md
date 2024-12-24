@@ -176,8 +176,8 @@ Now, `corpus_data` will contain aggregated tsv files for use in model training, 
 ### H5 files
 To create h5 data files use the `create_h5_data.py` script.
 
-From a DCML corpus (aggregated as above): `python create_h5_data.py -i corpus_data -h5 h5_data`  
-From the Functional Harmony corpus: `python create_h5_data.py -x -i functional-harmony -h5 h5_data`  
+From a DCML corpus (aggregated as above): `python create_h5_data.py -i corpus_data -o h5_data`  
+From the Functional Harmony corpus: `python create_h5_data.py -x -i functional-harmony -o h5_data`  
 * A pre-created version of the F-H data (with default splits and seed) is in the [h5_data-fh](h5_data-fh) directory.
 
 Now, `h5_data` will contain the h5 data files, split into train, test, and validation. Run `python create_h5_data.py -h` for other arguments, like split sizes and random seeding.

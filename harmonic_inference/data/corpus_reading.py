@@ -91,8 +91,8 @@ def load_clean_corpus_dfs(dir_path: Union[str, Path], count: int = None):
         The notes data frame, cleaned as described.
     """
     files_df = read_dump(Path(dir_path, "files.tsv"), index_col=0)
-    measures_df = read_dump(Path(dir_path, "measures.tsv"))
-    notes_df = read_dump(Path(dir_path, "notes.tsv"))
+    measures_df = read_dump(Path(dir_path, "measures.tsv"), low_memory=False)
+    notes_df = read_dump(Path(dir_path, "notes.tsv"), low_memory=False)
     try:
         chords_df = read_dump(Path(dir_path, "chords.tsv"), low_memory=False)
     except Exception:
@@ -106,13 +106,13 @@ def load_clean_corpus_dfs(dir_path: Union[str, Path], count: int = None):
         if chords_df is not None:
             chords_df = chords_df.loc[files_df.index]
 
-    # Bugfix for Couperin piece "next" error
-    files_df = files_df.loc[~(files_df["file_name"] == "c11n08_Rondeau.tsv")]
-    measures_df = measures_df.loc[files_df.index]
-    notes_df = notes_df.loc[files_df.index]
-    if chords_df is not None:
-        chords_df = chords_df.loc[chords_df.index.get_level_values(0).isin(files_df.index)]
-    # End bugfix
+    # # Bugfix for Couperin piece "next" error
+    # files_df = files_df.loc[~(files_df["file_name"] == "c11n08_Rondeau.tsv")]
+    # measures_df = measures_df.loc[files_df.index]
+    # notes_df = notes_df.loc[files_df.index]
+    # if chords_df is not None:
+    #     chords_df = chords_df.loc[chords_df.index.get_level_values(0).isin(files_df.index)]
+    # # End bugfix
 
     # Incomplete column renaming
     if "offset" in measures_df.columns:
@@ -212,7 +212,7 @@ def load_clean_corpus_dfs(dir_path: Union[str, Path], count: int = None):
             chords_df = chords_df.loc[~invalid_dur].copy()
 
     return files_df, measures_df, chords_df, notes_df
-
+    # TODO: Check why chords_df and notes_df are None in return
 
 def aggregate_annotation_dfs(
     annotations_path: Union[Path, str],
