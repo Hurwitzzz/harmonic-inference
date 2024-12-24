@@ -250,10 +250,10 @@ def aggregate_annotation_dfs(
     note_indexes = []
     measure_indexes = []
 
-    dir_name = "notes" if notes_only else "harmonies"
+    # dir_name = "notes" if notes_only else "harmonies"
 
     for file_string in tqdm(
-        glob(str(Path(annotations_path, f"**/{dir_name}/*.tsv")), recursive=True)
+        glob(str(Path(annotations_path, f"**/**/*.tsv")), recursive=True)
     ):
         file_path = Path(file_string)
         base_path = file_path.parent.parent
