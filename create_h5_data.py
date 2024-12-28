@@ -12,6 +12,8 @@ import numpy as np
 import harmonic_inference.data.datasets as ds
 from harmonic_inference.data.corpus_reading import load_clean_corpus_dfs
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 DATASET_CLASSES = [
     ds.ChordTransitionDataset,
     ds.ChordClassificationDataset,

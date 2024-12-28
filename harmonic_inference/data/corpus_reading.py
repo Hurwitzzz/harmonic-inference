@@ -16,6 +16,7 @@ from harmonic_inference.data.corpus_constants import (
     NOTE_ONSET_BEAT,
 )
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def read_dump(
     file: str,
@@ -212,7 +213,6 @@ def load_clean_corpus_dfs(dir_path: Union[str, Path], count: int = None):
             chords_df = chords_df.loc[~invalid_dur].copy()
 
     return files_df, measures_df, chords_df, notes_df
-    # TODO: Check why chords_df and notes_df are None in return
 
 def aggregate_annotation_dfs(
     annotations_path: Union[Path, str],
@@ -249,33 +249,38 @@ def aggregate_annotation_dfs(
     chord_indexes = []
     note_indexes = []
     measure_indexes = []
-
-    # dir_name = "notes" if notes_only else "harmonies"
+    
+    # TODO: This code is very confusing. Refactor to make it more readable.
+    # 1. The "notes_only" doesn't work;
+    # 2. Should not use logging.info to log errors;
+    # 3. Should not use "harmonies" to get the corpus name, it is confusing
+    # 4. Handel the special case for file_name liake "xxx.xxx.xxx.harmonies.tsv"
+    dir_name = "notes" if notes_only else "harmonies"
 
     for file_string in tqdm(
-        glob(str(Path(annotations_path, f"**/**/*.tsv")), recursive=True)
+        glob(str(Path(annotations_path, f"mozart_piano_sonatas/{dir_name}/*.tsv")), recursive=True)
     ):
         file_path = Path(file_string)
         base_path = file_path.parent.parent
         corpus_name = base_path.name
-        file_name = file_path.name
+        file_name = ".".join(file_path.name.split(".")[:-2])
 
         try:
-            chord_df = pd.read_csv(Path(base_path, "harmonies", file_name), dtype=str, sep="\t")
+            chord_df = pd.read_csv(Path(base_path, "harmonies", file_name+".harmonies.tsv"), dtype=str, sep="\t")
             chord_indexes.append(len(files_dict["file_name"]))
         except Exception:
             logging.info("Error parsing harmonies for file %s", file_name)
             chord_df = None
 
         try:
-            note_df = pd.read_csv(Path(base_path, "notes", file_name), dtype=str, sep="\t")
+            note_df = pd.read_csv(Path(base_path, "notes", file_name+".notes.tsv"), dtype=str, sep="\t")
             note_indexes.append(len(files_dict["file_name"]))
         except Exception:
             logging.info("Error parsing notes for file %s", file_name)
             note_df = None
 
         try:
-            measure_df = pd.read_csv(Path(base_path, "measures", file_name), dtype=str, sep="\t")
+            measure_df = pd.read_csv(Path(base_path, "measures", file_name+".measures.tsv"), dtype=str, sep="\t")
             measure_indexes.append(len(files_dict["file_name"]))
         except Exception:
             logging.info("Error parsing measures for file %s", file_name)
